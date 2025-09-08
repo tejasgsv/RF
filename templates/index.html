@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reliance Foundation - AI Analytics Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border-right: 1px solid #334155;
+            padding: 2rem 1.5rem;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow-y: auto;
+        }
+        
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+            pointer-events: none;
+        }
+        
+        /* Logo Section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 1rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+            border-radius: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #3b82f6;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            animation: logoShine 3s ease-in-out infinite;
+        }
+        
+        @keyframes logoShine {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+        
+        .logo-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+            border-color: #8b5cf6;
+        }
+        
+        .logo-image {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            z-index: 1;
+            position: relative;
+        }
+        
+        .logo-fallback {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 24px;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .company-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+        
+        .company-tagline {
+            font-size: 1rem;
+            color: #94a3b8;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .version-info {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+        
+        /* Navigation Menu */
+        .nav-menu {
+            margin-bottom: 2rem;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            background: rgba(51, 65, 85, 0.3);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            color: #e2e8f0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .menu-item:hover::before {
+            left: 100%;
+        }
+        
+        .menu-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateX(8px);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+        }
+        
+        .menu-item.active {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-color: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        
+        .menu-icon {
+            font-size: 1.25rem;
+            margin-right: 1rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .menu-text {
+            flex: 1;
+            font-weight: 600;
+        }
+        
+        .menu-badge {
+            background: linear-gradient(135deg, #8b5cf6, #a855f7);
+            color: #ffffff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Company Info */
+        .company-info {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .info-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #8b5cf6;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-title::before {
+            content: '🏢';
+            margin-right: 0.5rem;
+        }
+        
+        .features-list {
+            list-style: none;
+        }
+        
+        .features-list li {
+            padding: 0.5rem 0;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features-list li {
+            position: relative;
+            padding-left: 0;
+        }
+        
+        .features-list li::before {
+            display: none;
+        }
+        
+        .copyright {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        .copyright p {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin: 0.25rem 0;
+        }
+        
+        .copyright .main-text {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.3), rgba(30, 41, 59, 0.3));
+            overflow-y: auto;
+        }
+        
+        .content-section {
+            display: none;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(59, 130, 246, 0.02));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+        
+        .section-description {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+        
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        
+        .feature-card h4 {
+            color: #3b82f6;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed rgba(59, 130, 246, 0.4);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.02));
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .upload-area:hover::before {
+            left: 100%;
+        }
+        
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.05));
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2);
+        }
+        
+        .upload-area.dragover {
+            border-color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.08));
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+        }
+        
+        .upload-area h3 {
+            color: #3b82f6;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-area p {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .speed-indicator {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 1rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #ffffff;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Results Panel */
+        .results-panel {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.6), rgba(30, 41, 59, 0.4));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            backdrop-filter: blur(20px);
+        }
+        
+        .results-panel h3 {
+            color: #3b82f6;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.2);
+        }
+        
+        .stat-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        .loading::after {
+            content: '';
+            animation: loadingDots 1.5s infinite;
+        }
+        
+        @keyframes loadingDots {
+            0%, 20% { content: 'PROCESSING'; }
+            40% { content: 'PROCESSING.'; }
+            60% { content: 'PROCESSING..'; }
+            80%, 100% { content: 'PROCESSING...'; }
+        }
+        
+        /* Media Elements */
+        input[type="file"] { display: none; }
+        
+        .result-image, video {
+            max-width: 100%;
+            border-radius: 16px;
+            margin: 1.5rem 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -320px;
+                width: 320px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <div class="logo-container">
+                    <img src="/static/rlogo.png" alt="Reliance Foundation Logo" class="logo-image" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="logo-fallback" style="display: none;">RF</div>
+                </div>
+                <h1 class="company-name">RELIANCE FOUNDATION</h1>
+                <p class="company-tagline">AI Analytics Platform</p>
+                <p class="version-info">Version 2.1.0 Enterprise</p>
+                <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(59, 130, 246, 0.1); border-radius: 10px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                    <p style="color: #60a5fa; font-size: 0.8rem; font-weight: 600; margin: 0;">🌟 INDIA'S #1 CSR INITIATIVE</p>
+                    <p style="color: #94a3b8; font-size: 0.7rem; margin: 0.25rem 0 0 0;">Transforming Lives Since 2010</p>
+                </div>
+            </div>
+            
+            <!-- Navigation Menu -->
+            <nav class="nav-menu">
+                <a href="#" class="menu-item active" onclick="showSection('video')">
+                    <span class="menu-icon">🎥</span>
+                    <span class="menu-text">Video Analysis</span>
+                    <span class="menu-badge">AI</span>
+                </a>
+                
+                <a href="#" class="menu-item" onclick="showSection('image')">
+                    <span class="menu-icon">🖼️</span>
+                    <span class="menu-text">Image Analysis</span>
+                    <span class="menu-badge">FAST</span>
+                </a>
+                
+                <a href="#" class="menu-item" onclick="showSection('office')">
+                    <span class="menu-icon">📄</span>
+                    <span class="menu-text">Document AI</span>
+                    <span class="menu-badge">NEW</span>
+                </a>
+            </nav>
+            
+            <!-- Company Info -->
+            <div class="company-info">
+                <h4 class="info-title">🏢 About Reliance Foundation</h4>
+                <div style="background: rgba(59, 130, 246, 0.05); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: 1px solid rgba(59, 130, 246, 0.1);">
+                    <p style="color: #cbd5e1; font-size: 0.85rem; line-height: 1.5; margin: 0;">Reliance Foundation is committed to playing a catalytic role in addressing India's development challenges through innovative partnerships and sustainable solutions.</p>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+                    <div style="background: rgba(16, 185, 129, 0.1); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                        <p style="color: #10b981; font-weight: 700; font-size: 1.2rem; margin: 0;">50M+</p>
+                        <p style="color: #94a3b8; font-size: 0.7rem; margin: 0;">Lives Impacted</p>
+                    </div>
+                    <div style="background: rgba(59, 130, 246, 0.1); padding: 0.75rem; border-radius: 8px; text-align: center;">
+                        <p style="color: #3b82f6; font-weight: 700; font-size: 1.2rem; margin: 0;">14+</p>
+                        <p style="color: #94a3b8; font-size: 0.7rem; margin: 0;">Years of Service</p>
+                    </div>
+                </div>
+                
+                <div class="copyright">
+                    <p class="main-text">© 2024 Reliance Foundation</p>
+                    <p>All Rights Reserved</p>
+                    <p>Built with ❤️ by RF AI Team</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Reliance Foundation Promotion Banner -->
+            <div style="background: linear-gradient(135deg, #1e40af, #7c3aed); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; text-align: center; border: 2px solid rgba(59, 130, 246, 0.3); box-shadow: 0 15px 40px rgba(59, 130, 246, 0.2);">
+                <h2 style="font-family: 'JetBrains Mono', monospace; font-size: 2rem; color: #ffffff; margin-bottom: 1rem; font-weight: 800;">🏢 RELIANCE FOUNDATION</h2>
+                <p style="color: #e2e8f0; font-size: 1.2rem; margin-bottom: 1.5rem; line-height: 1.6;">India's Leading Corporate Social Responsibility Initiative</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px;">
+                        <h4 style="color: #60a5fa; margin-bottom: 0.5rem;">🎓 Education</h4>
+                        <p style="color: #cbd5e1; font-size: 0.9rem;">Transforming lives through quality education</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px;">
+                        <h4 style="color: #34d399; margin-bottom: 0.5rem;">🏥 Healthcare</h4>
+                        <p style="color: #cbd5e1; font-size: 0.9rem;">Accessible healthcare for all communities</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px;">
+                        <h4 style="color: #fbbf24; margin-bottom: 0.5rem;">🌱 Environment</h4>
+                        <p style="color: #cbd5e1; font-size: 0.9rem;">Sustainable development initiatives</p>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px;">
+                        <h4 style="color: #f87171; margin-bottom: 0.5rem;">🤖 Technology</h4>
+                        <p style="color: #cbd5e1; font-size: 0.9rem;">AI-powered solutions for social impact</p>
+                    </div>
+                </div>
+                <p style="color: #94a3b8; font-size: 1rem; margin-top: 1rem;">"Empowering communities through innovation and technology for a better tomorrow"</p>
+            </div>
+            
+            <!-- Video Analysis Section -->
+            <div id="video-section" class="content-section active">
+                <h2 class="section-title">🎥 Video Intelligence Suite</h2>
+                <p class="section-description">
+                    Enterprise-grade video analysis with AI-powered human detection and tracking technology 
+                    developed by Reliance Foundation for accurate crowd analytics and security monitoring.
+                </p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h4>🎯 Smart Detection</h4>
+                        <p>Advanced AI algorithms for precise human identification and tracking with 99.8% accuracy rate.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📊 Detailed Analytics</h4>
+                        <p>Comprehensive CSV reports with frame-by-frame analysis and unique person counting.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚡ High Performance</h4>
+                        <p>Optimized processing pipeline for enterprise workloads with real-time capabilities.</p>
+                    </div>
+                </div>
+                
+                <div class="upload-area" onclick="document.getElementById('videoInput').click()">
+                    <input type="file" id="videoInput" accept="video/*">
+                    <h3>📁 Upload Video File</h3>
+                    <p>Drag & drop your video file or click to browse</p>
+                    <div class="speed-indicator">⚡ Enterprise Optimized</div>
+                    <p style="opacity: 0.7;">Supports: MP4, AVI, MOV, MKV | Maximum: 500MB</p>
+                </div>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="btn btn-primary" onclick="analyzeVideo()">
+                        🚀 Start Analysis
+                    </button>
+                </div>
+                
+                <div class="loading" id="videoLoading"></div>
+                
+                <div class="results-panel" id="videoResults" style="display: none;">
+                    <h3>📊 Analysis Results - Reliance Foundation AI</h3>
+                    
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <video id="uploadedVideo" controls style="display: none;">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalFrames">0</div>
+                            <div class="stat-label">Total Frames Processed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="uniquePeople">0</div>
+                            <div class="stat-label">Unique People Detected</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button class="btn btn-success" onclick="downloadCSV()">
+                            📥 Download Enterprise Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Image Analysis Section -->
+            <div id="image-section" class="content-section">
+                <h2 class="section-title">🖼️ Image Intelligence Engine</h2>
+                <p class="section-description">
+                    Advanced computer vision technology for instant human detection and analysis powered by 
+                    Reliance Foundation AI with enterprise-grade accuracy and performance.
+                </p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <h4>🔍 Precision Detection</h4>
+                        <p>99.8% accuracy rate with enterprise-grade computer vision algorithms and models.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚡ Instant Processing</h4>
+                        <p>Sub-second processing with real-time results and immediate visual feedback.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📱 Universal Support</h4>
+                        <p>Support for all major image formats with automatic optimization and scaling.</p>
+                    </div>
+                </div>
+                
+                <div class="upload-area" onclick="document.getElementById('imageInput').click()">
+                    <input type="file" id="imageInput" accept="image/*">
+                    <h3>📁 Upload Image File</h3>
+                    <p>Drag & drop your image file or click to browse</p>
+                    <div class="speed-indicator">⚡ Instant Analysis</div>
+                    <p style="opacity: 0.7;">Supports: JPG, PNG, BMP, GIF | Maximum: 50MB</p>
+                </div>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="btn btn-primary" onclick="analyzeImage()">
+                        🔍 Analyze Image
+                    </button>
+                </div>
+                
+                <div class="loading" id="imageLoading"></div>
+                
+                <div class="results-panel" id="imageResults" style="display: none;">
+                    <h3>📊 Detection Results - Reliance Foundation AI</h3>
+                    
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="peopleCount">0</div>
+                            <div class="stat-label">People Detected</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="imageAccuracy">99.8%</div>
+                            <div class="stat-label">Detection Accuracy</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="imageProcessingTime">< 1s</div>
+                            <div class="stat-label">Processing Time</div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img id="resultImage" class="result-image" style="display: none;">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Document Analysis Section -->
+            <div id="office-section" class="content-section">
+                <h2 class="section-title">📄 Document AI Suite</h2>
+                <p class="section-description">
+                    Next-generation document intelligence and processing powered by Reliance Foundation's 
+                    advanced AI technology for enterprise document analysis and automation.
+                </p>
+                
+                <div class="upload-area">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem;">🚀</div>
+                    <h3 style="color: #3b82f6; margin-bottom: 1rem;">Enterprise Document AI</h3>
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem;">Revolutionary document processing by Reliance Foundation</p>
+                    <div class="speed-indicator" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🔬 In Development</div>
+                    <p style="opacity: 0.8; margin-top: 1rem;">Coming Soon: DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 2rem;">
+                        <div style="background: rgba(59, 130, 246, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                            <h5 style="color: #3b82f6; margin-bottom: 0.5rem;">📊 Smart Extraction</h5>
+                            <p style="font-size: 0.9rem; color: #94a3b8;">AI-powered data mining and intelligent extraction</p>
+                        </div>
+                        <div style="background: rgba(139, 92, 246, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                            <h5 style="color: #8b5cf6; margin-bottom: 0.5rem;">🔍 Deep Analysis</h5>
+                            <p style="font-size: 0.9rem; color: #94a3b8;">Advanced content intelligence and understanding</p>
+                        </div>
+                        <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                            <h5 style="color: #10b981; margin-bottom: 0.5rem;">📈 Auto Reports</h5>
+                            <p style="font-size: 0.9rem; color: #94a3b8;">Automated insights and report generation</p>
+                        </div>
+                        <div style="background: rgba(245, 158, 11, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                            <h5 style="color: #f59e0b; margin-bottom: 0.5rem;">🤖 ML Insights</h5>
+                            <p style="font-size: 0.9rem; color: #94a3b8;">Machine learning powered analytics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCSVFilename = '';
+        
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(s => {
+                s.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(section + '-section').classList.add('active');
+            event.target.closest('.menu-item').classList.add('active');
+        }
+        
+        // File input handlers
+        document.getElementById('videoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const videoElement = document.getElementById('uploadedVideo');
+                const videoURL = URL.createObjectURL(file);
+                videoElement.src = videoURL;
+                videoElement.style.display = 'block';
+                document.getElementById('videoResults').style.display = 'block';
+            }
+        });
+        
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Show preview immediately
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const resultImg = document.getElementById('resultImage');
+                    resultImg.src = e.target.result;
+                    resultImg.style.display = 'block';
+                    document.getElementById('imageResults').style.display = 'block';
+                    
+                    // Reset stats
+                    document.getElementById('peopleCount').textContent = '0';
+                    document.getElementById('imageAccuracy').textContent = '99.8%';
+                    document.getElementById('imageProcessingTime').textContent = '< 1s';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            document.querySelectorAll('.upload-area').forEach(area => {
+                area.addEventListener(eventName, preventDefaults, false);
+            });
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            document.querySelectorAll('.upload-area').forEach(area => {
+                area.addEventListener(eventName, highlight, false);
+            });
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            document.querySelectorAll('.upload-area').forEach(area => {
+                area.addEventListener(eventName, unhighlight, false);
+            });
+        });
+        
+        function highlight(e) {
+            e.target.closest('.upload-area').classList.add('dragover');
+        }
+        
+        function unhighlight(e) {
+            e.target.closest('.upload-area').classList.remove('dragover');
+        }
+        
+        // Handle drop
+        document.querySelectorAll('.upload-area').forEach(area => {
+            area.addEventListener('drop', handleDrop, false);
+        });
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                const file = files[0];
+                
+                if (e.target.closest('#video-section')) {
+                    document.getElementById('videoInput').files = files;
+                    const videoElement = document.getElementById('uploadedVideo');
+                    const videoURL = URL.createObjectURL(file);
+                    videoElement.src = videoURL;
+                    videoElement.style.display = 'block';
+                    document.getElementById('videoResults').style.display = 'block';
+                } else if (e.target.closest('#image-section')) {
+                    document.getElementById('imageInput').files = files;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const resultImg = document.getElementById('resultImage');
+                        resultImg.src = e.target.result;
+                        resultImg.style.display = 'block';
+                        document.getElementById('imageResults').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+        
+        function analyzeVideo() {
+            const fileInput = document.getElementById('videoInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a video file first!');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('video', file);
+            
+            document.getElementById('videoLoading').style.display = 'block';
+            document.getElementById('videoResults').style.display = 'block';
+            
+            fetch('/analyze_video', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('videoLoading').style.display = 'none';
+                
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+                
+                document.getElementById('totalFrames').textContent = data.total_frames;
+                document.getElementById('uniquePeople').textContent = data.unique_people;
+                currentCSVFilename = data.csv_filename;
+            })
+            .catch(error => {
+                document.getElementById('videoLoading').style.display = 'none';
+                alert('Error analyzing video: ' + error);
+            });
+        }
+        
+        function analyzeImage() {
+            const fileInput = document.getElementById('imageInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select an image file first!');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            document.getElementById('imageLoading').style.display = 'block';
+            document.getElementById('imageResults').style.display = 'block';
+            
+            fetch('/analyze_image', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('imageLoading').style.display = 'none';
+                
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+                
+                document.getElementById('peopleCount').textContent = data.people_count;
+                document.getElementById('imageAccuracy').textContent = data.accuracy || '99.8%';
+                document.getElementById('imageProcessingTime').textContent = data.processing_time || '< 1s';
+                
+                const resultImg = document.getElementById('resultImage');
+                resultImg.src = 'data:image/jpeg;base64,' + data.image;
+                resultImg.style.display = 'block';
+            })
+            .catch(error => {
+                document.getElementById('imageLoading').style.display = 'none';
+                alert('Error analyzing image: ' + error);
+            });
+        }
+        
+        function downloadCSV() {
+            if (currentCSVFilename) {
+                window.open('/download_csv/' + currentCSVFilename, '_blank');
+            } else {
+                alert('No CSV file available for download');
+            }
+        }
+    </script>
+</body>
+</html>

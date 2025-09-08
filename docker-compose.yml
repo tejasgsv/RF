@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  reliance-ai:
+    build: .
+    container_name: reliance-foundation-ai
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_CONFIG=production
+      - SECRET_KEY=reliance-foundation-secure-key-2024
+    volumes:
+      - ./uploads:/app/uploads
+      - ./static:/app/static
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  nginx:
+    image: nginx:alpine
+    container_name: reliance-ai-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - reliance-ai
+    restart: unless-stopped
+
+volumes:
+  uploads:
+  static:
