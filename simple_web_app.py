@@ -2,11 +2,10 @@ from flask import Flask, render_template_string, request, jsonify
 import cv2
 import numpy as np
 import base64
-import os
 from PIL import Image
+import os
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max file size
 
 # Simple HTML template
 HTML_TEMPLATE = '''
@@ -42,18 +41,18 @@ HTML_TEMPLATE = '''
         </div>
         
         <div class="upload-area">
-            <h3>Upload Image for Human Detection</h3>
+            <h3>📸 Upload Image for Human Detection</h3>
             <input type="file" id="imageInput" accept="image/*" style="margin: 20px;">
             <br>
-            <button class="btn" onclick="analyzeImage()">Analyze Image</button>
+            <button class="btn" onclick="analyzeImage()">🔍 Analyze Image</button>
         </div>
         
         <div id="loading" class="hidden">
-            <h3>Processing...</h3>
+            <h3>🔄 Processing...</h3>
         </div>
         
         <div id="result" class="result hidden">
-            <h3>Detection Results</h3>
+            <h3>📊 Detection Results</h3>
             <div id="resultContent"></div>
         </div>
     </div>
@@ -74,7 +73,7 @@ HTML_TEMPLATE = '''
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('result').classList.add('hidden');
             
-            fetch('/analyze_image', {
+            fetch('/analyze', {
                 method: 'POST',
                 body: formData
             })
@@ -88,9 +87,9 @@ HTML_TEMPLATE = '''
                 }
                 
                 document.getElementById('resultContent').innerHTML = `
-                    <h4>People Detected: ${data.people_count}</h4>
-                    <h4>Processing Time: ${data.processing_time}</h4>
-                    <h4>Accuracy: ${data.accuracy}</h4>
+                    <h4>👥 People Detected: ${data.people_count}</h4>
+                    <h4>⚡ Processing Time: ${data.processing_time}</h4>
+                    <h4>🎯 Accuracy: ${data.accuracy}</h4>
                     <img src="data:image/jpeg;base64,${data.image}" alt="Detection Result">
                 `;
                 document.getElementById('result').classList.remove('hidden');
@@ -109,8 +108,8 @@ HTML_TEMPLATE = '''
 def index():
     return render_template_string(HTML_TEMPLATE)
 
-@app.route('/analyze_image', methods=['POST'])
-def analyze_image():
+@app.route('/analyze', methods=['POST'])
+def analyze():
     try:
         file = request.files['image']
         image = Image.open(file.stream)
@@ -177,13 +176,7 @@ def analyze_image():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/info')
-def api_info():
-    return jsonify({
-        'status': 'running',
-        'service': 'Reliance Foundation AI Platform',
-        'version': '2.1.0'
-    })
-
 if __name__ == '__main__':
+    print("Reliance Foundation AI Platform Starting...")
+    print("Open: http://localhost:5000")
     app.run(debug=True, host='0.0.0.0', port=5000)
