@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reliance Foundation AI Analytics Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .header {
+            background: rgba(255,255,255,0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .logo { width: 80px; height: 80px; background: #ff6b35; border-radius: 50%; 
+                display: inline-flex; align-items: center; justify-content: center;
+                color: white; font-weight: bold; font-size: 24px; margin-bottom: 1rem; }
+        h1 { color: #2c3e50; font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .tagline { color: #7f8c8d; font-size: 1.2rem; }
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .service-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .service-card:hover { transform: translateY(-5px); }
+        .service-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .service-card h3 { color: #2c3e50; margin-bottom: 1rem; }
+        .service-card p { color: #7f8c8d; line-height: 1.6; margin-bottom: 1.5rem; }
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white; border: none; padding: 12px 24px;
+            border-radius: 25px; cursor: pointer; font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .footer {
+            background: rgba(0,0,0,0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">RF</div>
+            <h1>Reliance Foundation</h1>
+            <p class="tagline">AI Analytics Platform</p>
+        </header>
+
+        <div class="services">
+            <div class="service-card">
+                <div class="service-icon">🎥</div>
+                <h3>Video Intelligence</h3>
+                <p>Real-time human detection and tracking in video streams with 99.8% accuracy.</p>
+                <button class="btn">Launch Application</button>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">📸</div>
+                <h3>Image Analysis</h3>
+                <p>Instant human detection in images with comprehensive reporting.</p>
+                <button class="btn">Launch Application</button>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">📄</div>
+                <h3>Document AI</h3>
+                <p>Advanced document processing and analysis capabilities.</p>
+                <button class="btn" disabled style="opacity: 0.7;">Coming Soon</button>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>&copy; 2024 Reliance Foundation. All Rights Reserved.</p>
+            <p style="margin-top: 0.5rem; opacity: 0.8;">Built with ❤️ by Reliance Foundation AI Team</p>
+        </footer>
+    </div>
+
+    <script>
+        document.querySelectorAll('.btn:not([disabled])').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert('Flask application will run locally. Use: python app.py');
+            });
+        });
+    </script>
+</body>
+</html>
