@@ -175,5 +175,13 @@ def download_csv(filename):
     except Exception as e:
         return jsonify({'error': 'File not found'}), 404
 
+@app.route('/api/info')
+def api_info():
+    return jsonify({
+        'status': 'running',
+        'service': 'Reliance Foundation AI Platform',
+        'version': '2.1.0'
+    })
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
