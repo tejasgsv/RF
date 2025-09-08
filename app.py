@@ -1,113 +1,123 @@
-from flask import Flask, render_template_string, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 import cv2
 import numpy as np
+import pandas as pd
 import base64
 import os
 from PIL import Image
+from datetime import datetime
+from ultralytics import YOLO
+from norfair import Detection, Tracker
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max file size
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB max file size
 
-# Simple HTML template
-HTML_TEMPLATE = '''
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Reliance Foundation AI Platform</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); 
-               color: white; margin: 0; padding: 20px; min-height: 100vh; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .logo { width: 80px; height: 80px; background: #ff6b35; border-radius: 50%; 
-                display: inline-flex; align-items: center; justify-content: center;
-                color: white; font-weight: bold; font-size: 24px; margin-bottom: 20px; }
-        .upload-area { background: rgba(255,255,255,0.1); border: 2px dashed #fff; 
-                       border-radius: 15px; padding: 40px; text-align: center; margin: 20px 0; }
-        .btn { background: linear-gradient(45deg, #ff6b35, #f7931e); color: white; 
-               border: none; padding: 15px 30px; border-radius: 25px; cursor: pointer; 
-               font-size: 16px; margin: 10px; }
-        .btn:hover { transform: scale(1.05); }
-        .result { background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; margin: 20px 0; }
-        .hidden { display: none; }
-        img { max-width: 100%; border-radius: 10px; margin: 10px 0; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">RF</div>
-            <h1>Reliance Foundation</h1>
-            <h2>AI Human Detection Platform</h2>
-        </div>
-        
-        <div class="upload-area">
-            <h3>Upload Image for Human Detection</h3>
-            <input type="file" id="imageInput" accept="image/*" style="margin: 20px;">
-            <br>
-            <button class="btn" onclick="analyzeImage()">Analyze Image</button>
-        </div>
-        
-        <div id="loading" class="hidden">
-            <h3>Processing...</h3>
-        </div>
-        
-        <div id="result" class="result hidden">
-            <h3>Detection Results</h3>
-            <div id="resultContent"></div>
-        </div>
-    </div>
+# Create directories
+os.makedirs('uploads', exist_ok=True)
+os.makedirs('static', exist_ok=True)
 
-    <script>
-        function analyzeImage() {
-            const fileInput = document.getElementById('imageInput');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                alert('Please select an image first!');
-                return;
-            }
-            
-            const formData = new FormData();
-            formData.append('image', file);
-            
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('result').classList.add('hidden');
-            
-            fetch('/analyze_image', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('loading').classList.add('hidden');
-                
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                    return;
-                }
-                
-                document.getElementById('resultContent').innerHTML = `
-                    <h4>People Detected: ${data.people_count}</h4>
-                    <h4>Processing Time: ${data.processing_time}</h4>
-                    <h4>Accuracy: ${data.accuracy}</h4>
-                    <img src="data:image/jpeg;base64,${data.image}" alt="Detection Result">
-                `;
-                document.getElementById('result').classList.remove('hidden');
-            })
-            .catch(error => {
-                document.getElementById('loading').classList.add('hidden');
-                alert('Error: ' + error);
-            });
-        }
-    </script>
-</body>
-</html>
-'''
+# Load YOLO model
+try:
+    model = YOLO('yolov8n.pt')
+except:
+    model = None
 
 @app.route('/')
 def index():
-    return render_template_string(HTML_TEMPLATE)
+    return render_template('index.html')
+
+@app.route('/analyze_video', methods=['POST'])
+def analyze_video():
+    try:
+        file = request.files['video']
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f'video_{timestamp}.mp4'
+        file.save(filename)
+        
+        cap = cv2.VideoCapture(filename)
+        
+        if model:
+            # Use YOLO + Norfair tracking
+            tracker = Tracker(distance_function="euclidean", distance_threshold=30)
+            unique_ids = set()
+            frame_number = 0
+            results_data = []
+            
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                    
+                frame_number += 1
+                
+                # Process every 5th frame for speed
+                if frame_number % 5 != 0:
+                    continue
+                
+                results = model(frame)[0]
+                detections = []
+                
+                for box in results.boxes:
+                    if int(box.cls[0]) == 0:  # Class 0 = person
+                        x1, y1, x2, y2 = map(int, box.xyxy[0])
+                        cx, cy = int((x1 + x2)/2), int((y1 + y2)/2)
+                        detections.append(Detection(points=np.array([[cx, cy]])))
+                
+                tracked_objects = tracker.update(detections=detections)
+                
+                for obj in tracked_objects:
+                    unique_ids.add(obj.id)
+                
+                results_data.append({
+                    'Frame': frame_number,
+                    'People_Count': len(tracked_objects),
+                    'Unique_People': len(unique_ids)
+                })
+        else:
+            # Fallback to Haar Cascade
+            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            unique_people = set()
+            frame_number = 0
+            results_data = []
+            
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                    
+                frame_number += 1
+                
+                if frame_number % 5 != 0:
+                    continue
+                
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+                
+                unique_people.add(len(faces))
+                results_data.append({
+                    'Frame': frame_number,
+                    'People_Count': len(faces),
+                    'Unique_People': len(unique_people)
+                })
+        
+        cap.release()
+        
+        # Save CSV
+        csv_filename = f'video_analysis_{timestamp}.csv'
+        df = pd.DataFrame(results_data)
+        df.to_csv(f'uploads/{csv_filename}', index=False)
+        
+        # Clean up
+        os.remove(filename)
+        
+        return jsonify({
+            'total_frames': frame_number,
+            'unique_people': len(unique_ids) if model else len(unique_people),
+            'csv_filename': csv_filename
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/analyze_image', methods=['POST'])
 def analyze_image():
@@ -121,42 +131,30 @@ def analyze_image():
         if width > 800:
             frame = cv2.resize(frame, (800, int(height * (800 / width))))
         
-        # Use Haar Cascade for human detection
-        face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        body_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fullbody.xml')
-        
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        
-        # Detect faces and bodies
-        faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-        bodies = body_cascade.detectMultiScale(gray, 1.1, 3)
-        
         people_count = 0
         
-        # Draw face detections
-        for (x, y, w, h) in faces:
-            people_count += 1
-            cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 255), 3)
-            cv2.putText(frame, f'Person {people_count}', (x, y-10), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
-        
-        # Draw body detections (avoid duplicates)
-        for (x, y, w, h) in bodies:
-            cx, cy = x + w//2, y + h//2
-            is_duplicate = False
+        if model:
+            # Use YOLO for detection
+            results = model(frame)[0]
             
-            for (fx, fy, fw, fh) in faces:
-                fcx, fcy = fx + fw//2, fy + fh//2
-                distance = ((cx - fcx)**2 + (cy - fcy)**2)**0.5
-                if distance < 100:
-                    is_duplicate = True
-                    break
+            for box in results.boxes:
+                if int(box.cls[0]) == 0:  # Class 0 = person
+                    people_count += 1
+                    x1, y1, x2, y2 = map(int, box.xyxy[0])
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
+                    cv2.putText(frame, f'Person {people_count}', (x1, y1-10), 
+                               cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+        else:
+            # Fallback to Haar Cascade
+            face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            faces = face_cascade.detectMultiScale(gray, 1.3, 5)
             
-            if not is_duplicate:
+            for (x, y, w, h) in faces:
                 people_count += 1
-                cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 255), 3)
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 255), 3)
                 cv2.putText(frame, f'Person {people_count}', (x, y-10), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 255), 2)
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
         
         # Add info
         cv2.putText(frame, f'Total: {people_count} People', (10, 30), 
@@ -164,7 +162,7 @@ def analyze_image():
         cv2.putText(frame, 'Reliance Foundation AI', (10, frame.shape[0] - 20), 
                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
         
-        _, buffer = cv2.imencode('.jpg', frame)
+        _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
         img_base64 = base64.b64encode(buffer).decode('utf-8')
         
         return jsonify({
@@ -177,12 +175,21 @@ def analyze_image():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/download_csv/<filename>')
+def download_csv(filename):
+    try:
+        filepath = f'uploads/{filename}'
+        return send_file(filepath, as_attachment=True, download_name=f'reliance_foundation_{filename}')
+    except Exception as e:
+        return jsonify({'error': 'File not found'}), 404
+
 @app.route('/api/info')
 def api_info():
     return jsonify({
         'status': 'running',
         'service': 'Reliance Foundation AI Platform',
-        'version': '2.1.0'
+        'version': '2.1.0',
+        'yolo_available': model is not None
     })
 
 if __name__ == '__main__':

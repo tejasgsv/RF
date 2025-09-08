@@ -3,3 +3,6 @@ gunicorn==21.2.0
 numpy<2.0.0
 opencv-python-headless==4.8.1.78
 Pillow>=10.4.0
+pandas==2.1.4
+ultralytics==8.0.196
+norfair==2.2.0
