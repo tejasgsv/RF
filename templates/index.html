@@ -682,30 +682,7 @@
         
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Reliance Foundation Promotion Banner -->
-            <div style="background: linear-gradient(135deg, #1e40af, #7c3aed); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; text-align: center; border: 2px solid rgba(59, 130, 246, 0.3); box-shadow: 0 15px 40px rgba(59, 130, 246, 0.2);">
-                <h2 style="font-family: 'JetBrains Mono', monospace; font-size: 2rem; color: #ffffff; margin-bottom: 1rem; font-weight: 800;">🏢 RELIANCE FOUNDATION</h2>
-                <p style="color: #e2e8f0; font-size: 1.2rem; margin-bottom: 1.5rem; line-height: 1.6;">India's Leading Corporate Social Responsibility Initiative</p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0;">
-                    <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px;">
-                        <h4 style="color: #60a5fa; margin-bottom: 0.5rem;">🎓 Education</h4>
-                        <p style="color: #cbd5e1; font-size: 0.9rem;">Transforming lives through quality education</p>
-                    </div>
-                    <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px;">
-                        <h4 style="color: #34d399; margin-bottom: 0.5rem;">🏥 Healthcare</h4>
-                        <p style="color: #cbd5e1; font-size: 0.9rem;">Accessible healthcare for all communities</p>
-                    </div>
-                    <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px;">
-                        <h4 style="color: #fbbf24; margin-bottom: 0.5rem;">🌱 Environment</h4>
-                        <p style="color: #cbd5e1; font-size: 0.9rem;">Sustainable development initiatives</p>
-                    </div>
-                    <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px;">
-                        <h4 style="color: #f87171; margin-bottom: 0.5rem;">🤖 Technology</h4>
-                        <p style="color: #cbd5e1; font-size: 0.9rem;">AI-powered solutions for social impact</p>
-                    </div>
-                </div>
-                <p style="color: #94a3b8; font-size: 1rem; margin-top: 1rem;">"Empowering communities through innovation and technology for a better tomorrow"</p>
-            </div>
+
             
             <!-- Video Analysis Section -->
             <div id="video-section" class="content-section active">
@@ -825,10 +802,7 @@
                             <div class="stat-number" id="peopleCount">0</div>
                             <div class="stat-label">People Detected</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="imageAccuracy">99.8%</div>
-                            <div class="stat-label">Detection Accuracy</div>
-                        </div>
+
                         <div class="stat-card">
                             <div class="stat-number" id="imageProcessingTime">< 1s</div>
                             <div class="stat-label">Processing Time</div>
@@ -1060,7 +1034,6 @@
                 }
                 
                 document.getElementById('peopleCount').textContent = data.people_count;
-                document.getElementById('imageAccuracy').textContent = data.accuracy || '99.8%';
                 document.getElementById('imageProcessingTime').textContent = data.processing_time || '< 1s';
                 
                 const resultImg = document.getElementById('resultImage');
