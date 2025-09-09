@@ -113,6 +113,7 @@ def analyze_video():
         return jsonify({
             'total_frames': frame_number,
             'unique_people': len(unique_ids) if model else len(unique_people),
+            'total_objects_detected': sum([row['People_Count'] for row in results_data]),
             'csv_filename': csv_filename
         })
         
