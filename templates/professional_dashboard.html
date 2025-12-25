@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reliance Foundation - AI Analytics Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #003366;
+            --reliance-gold: #FFB81C;
+            --accent-blue: #0066CC;
+            --success-green: #28a745;
+            --warning-orange: #ff9800;
+            --danger-red: #dc3545;
+            --light-bg: #f5f5f5;
+            --white: #ffffff;
+            --dark-text: #333333;
+            --border-gray: #e0e0e0;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--accent-blue) 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--reliance-gold);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            color: var(--primary-blue);
+        }
+
+        .header-title h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header-title p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border-gray);
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-blue);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-gray);
+        }
+
+        .upload-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .file-type-btn {
+            padding: 15px;
+            border: 2px solid var(--border-gray);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .file-type-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .file-type-btn:hover {
+            border-color: var(--primary-blue);
+        }
+
+        .drag-drop-area {
+            border: 2px dashed var(--accent-blue);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background: rgba(0,102,204,0.02);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .drag-drop-area.drag-over {
+            background: rgba(0,102,204,0.1);
+            border-color: var(--reliance-gold);
+        }
+
+        .drag-drop-icon {
+            font-size: 48px;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+        }
+
+        .drag-drop-text {
+            font-size: 16px;
+            color: var(--dark-text);
+            margin-bottom: 5px;
+        }
+
+        .drag-drop-hint {
+            font-size: 12px;
+            color: #999;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #002244;
+            box-shadow: 0 4px 12px rgba(0,51,102,0.3);
+        }
+
+        .btn-success {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: none;
+        }
+
+        .progress-section.active {
+            display: block;
+        }
+
+        .progress-item {
+            margin-bottom: 25px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue));
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .status-text {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Results Section */
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .result-card.gold {
+            border-left-color: var(--reliance-gold);
+        }
+
+        .result-card.green {
+            border-left-color: var(--success-green);
+        }
+
+        .result-card.orange {
+            border-left-color: var(--warning-orange);
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #999;
+            font-weight: 500;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+
+        .result-subtitle {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Table */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .results-table th {
+            background: var(--primary-blue);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 500;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .results-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .results-table tr:hover {
+            background: rgba(0,102,204,0.02);
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-processing {
+            background: rgba(255,152,0,0.2);
+            color: #ff9800;
+        }
+
+        .status-completed {
+            background: rgba(40,167,69,0.2);
+            color: var(--success-green);
+        }
+
+        .status-failed {
+            background: rgba(220,53,69,0.2);
+            color: var(--danger-red);
+        }
+
+        .status-queued {
+            background: rgba(0,102,204,0.2);
+            color: var(--accent-blue);
+        }
+
+        /* Charts */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        /* Export Options */
+        .export-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .export-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+        }
+
+        .export-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        /* Loading States */
+        .loader {
+            border: 3px solid var(--border-gray);
+            border-top: 3px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background: rgba(40,167,69,0.1);
+            color: var(--success-green);
+            border-left: 3px solid var(--success-green);
+        }
+
+        .alert-error {
+            background: rgba(220,53,69,0.1);
+            color: var(--danger-red);
+            border-left: 3px solid var(--danger-red);
+        }
+
+        .alert-warning {
+            background: rgba(255,152,0,0.1);
+            color: var(--warning-orange);
+            border-left: 3px solid var(--warning-orange);
+        }
+
+        .alert-info {
+            background: rgba(0,102,204,0.1);
+            color: var(--accent-blue);
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-blue);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            font-size: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .upload-section {
+                padding: 25px;
+            }
+
+            .results-section {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .result-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="header-logo">
+                <i class="fas fa-lightbulb"></i>
+            </div>
+            <div class="header-title">
+                <h1>Reliance Foundation</h1>
+                <p>AI Analytics Platform v3.0.0</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="status-badge">
+                <i class="fas fa-circle" style="color: #28a745; margin-right: 5px;"></i> Live
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'upload')">
+                <i class="fas fa-upload"></i> Upload & Analyze
+            </button>
+            <button class="tab-btn" onclick="switchTab(event, 'results')">
+                <i class="fas fa-chart-bar"></i> Results
+            </button>
+            <button class="tab-btn" onclick="switchTab(event, 'history')">
+                <i class="fas fa-history"></i> History
+            </button>
+            <button class="tab-btn" onclick="switchTab(event, 'statistics')">
+                <i class="fas fa-analytics"></i> Statistics
+            </button>
+        </div>
+
+        <!-- Upload Tab -->
+        <div id="upload" class="tab-content active">
+            <div class="upload-section">
+                <div class="upload-title">
+                    <i class="fas fa-file-upload"></i> Select File Type
+                </div>
+
+                <div class="file-type-selector">
+                    <button class="file-type-btn active" onclick="selectFileType('video', this)">
+                        <i class="fas fa-video"></i><br> Video
+                    </button>
+                    <button class="file-type-btn" onclick="selectFileType('image', this)">
+                        <i class="fas fa-image"></i><br> Image
+                    </button>
+                    <button class="file-type-btn" onclick="selectFileType('document', this)">
+                        <i class="fas fa-file-pdf"></i><br> Document
+                    </button>
+                </div>
+
+                <div class="drag-drop-area" id="dragDropArea" onclick="document.getElementById('fileInput').click()">
+                    <div class="drag-drop-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="drag-drop-text">Drag and drop your file here</div>
+                    <div class="drag-drop-hint">or click to browse from your computer</div>
+                </div>
+
+                <input type="file" id="fileInput" accept="video/*,image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+
+                <div class="button-group">
+                    <button class="btn btn-primary" id="analyzeBtn" onclick="startAnalysis()" disabled>
+                        <i class="fas fa-play"></i> Start Analysis
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearFile()">
+                        <i class="fas fa-times"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-section" id="progressSection">
+                <div class="upload-title">
+                    <i class="fas fa-spinner fa-spin"></i> Processing...
+                </div>
+
+                <div class="progress-item">
+                    <div class="progress-label">
+                        <span id="progressLabel">Uploading file...</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="status-text" id="progressStatus">Preparing file...</div>
+                </div>
+            </div>
+
+            <!-- Results Display -->
+            <div id="resultsContainer" style="display: none;">
+                <div class="alert alert-success" id="successAlert">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Analysis completed successfully!</span>
+                </div>
+
+                <div class="results-section" id="resultCards"></div>
+
+                <div class="charts-section" id="chartsSection"></div>
+
+                <div class="export-section">
+                    <div class="export-title">
+                        <i class="fas fa-download"></i> Export Results
+                    </div>
+                    <div class="export-options">
+                        <button class="btn btn-primary" onclick="downloadResults('csv')">
+                            <i class="fas fa-file-csv"></i> CSV
+                        </button>
+                        <button class="btn btn-primary" onclick="downloadResults('json')">
+                            <i class="fas fa-file-code"></i> JSON
+                        </button>
+                        <button class="btn btn-primary" onclick="downloadResults('pdf')">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                        <button class="btn btn-primary" onclick="printResults()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Tab -->
+        <div id="results" class="tab-content">
+            <div style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <div class="upload-title">
+                    <i class="fas fa-list"></i> Analysis Results
+                </div>
+                <table class="results-table" id="resultsHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody">
+                        <tr><td colspan="5" style="text-align: center; padding: 30px; color: #999;">No results yet. Upload a file to get started.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- History Tab -->
+        <div id="history" class="tab-content">
+            <div style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <div class="upload-title">
+                    <i class="fas fa-history"></i> Upload History
+                </div>
+                <div id="historyContainer" style="padding: 20px; text-align: center; color: #999;">
+                    Loading history...
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Tab -->
+        <div id="statistics" class="tab-content">
+            <div class="results-section">
+                <div class="result-card gold">
+                    <div class="result-label">Total Analyses</div>
+                    <div class="result-value" id="totalAnalyses">0</div>
+                    <div class="result-subtitle">All time</div>
+                </div>
+                <div class="result-card green">
+                    <div class="result-label">Success Rate</div>
+                    <div class="result-value" id="successRate">0%</div>
+                    <div class="result-subtitle">Completed successfully</div>
+                </div>
+                <div class="result-card orange">
+                    <div class="result-label">Average Time</div>
+                    <div class="result-value" id="avgTime">0s</div>
+                    <div class="result-subtitle">Processing duration</div>
+                </div>
+            </div>
+
+            <div class="charts-section">
+                <div class="chart-container">
+                    <div class="chart-title">Analyses by Type</div>
+                    <canvas id="typeChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Status Distribution</div>
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2025 Reliance Foundation AI Analytics Platform | All Rights Reserved</p>
+    </div>
+
+    <script>
+        let currentFileType = 'video';
+        let selectedFile = null;
+        let currentAnalysisId = null;
+
+        // File type selection
+        function selectFileType(type, btn) {
+            currentFileType = type;
+            document.querySelectorAll('.file-type-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // Drag and drop
+        const dragDropArea = document.getElementById('dragDropArea');
+        const fileInput = document.getElementById('fileInput');
+
+        dragDropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dragDropArea.classList.add('drag-over');
+        });
+
+        dragDropArea.addEventListener('dragleave', () => {
+            dragDropArea.classList.remove('drag-over');
+        });
+
+        dragDropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dragDropArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect();
+            }
+        });
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            if (file) {
+                selectedFile = file;
+                dragDropArea.innerHTML = `
+                    <div style="color: #28a745; font-weight: 600;">
+                        <i class="fas fa-check-circle" style="font-size: 32px; margin-bottom: 10px;"></i>
+                        <div>${file.name}</div>
+                        <div style="font-size: 12px; margin-top: 5px;">${formatFileSize(file.size)}</div>
+                    </div>
+                `;
+                document.getElementById('analyzeBtn').disabled = false;
+            }
+        }
+
+        function clearFile() {
+            selectedFile = null;
+            fileInput.value = '';
+            dragDropArea.innerHTML = `
+                <div class="drag-drop-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <div class="drag-drop-text">Drag and drop your file here</div>
+                <div class="drag-drop-hint">or click to browse from your computer</div>
+            `;
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('resultsContainer').style.display = 'none';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Start analysis
+        async function startAnalysis() {
+            if (!selectedFile) {
+                alert('Please select a file first');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('file_type', currentFileType);
+
+            const progressSection = document.getElementById('progressSection');
+            progressSection.classList.add('active');
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentAnalysisId = data.analysis_id;
+                    updateProgress('Analysis started...', 10);
+                    pollAnalysisStatus(data.analysis_id);
+                } else {
+                    showError(data.message || 'Analysis failed');
+                    progressSection.classList.remove('active');
+                }
+            } catch (error) {
+                showError('Upload failed: ' + error.message);
+                progressSection.classList.remove('active');
+            }
+        }
+
+        function updateProgress(message, percent) {
+            document.getElementById('progressLabel').textContent = message;
+            document.getElementById('progressPercent').textContent = percent + '%';
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressStatus').textContent = message;
+        }
+
+        async function pollAnalysisStatus(analysisId) {
+            const maxAttempts = 600; // 10 minutes with 1 second intervals
+            let attempts = 0;
+
+            const poll = setInterval(async () => {
+                attempts++;
+
+                try {
+                    const response = await fetch(`/results/${analysisId}`);
+                    const data = await response.json();
+
+                    if (data.status === 'completed') {
+                        clearInterval(poll);
+                        displayResults(data);
+                        document.getElementById('progressSection').classList.remove('active');
+                    } else if (data.status === 'failed') {
+                        clearInterval(poll);
+                        showError(data.error_message || 'Analysis failed');
+                        document.getElementById('progressSection').classList.remove('active');
+                    } else {
+                        const percent = Math.min(90, 10 + (attempts * 0.1));
+                        updateProgress(`Processing ${data.file_type}...`, Math.floor(percent));
+                    }
+                } catch (error) {
+                    console.error('Poll error:', error);
+                }
+
+                if (attempts >= maxAttempts) {
+                    clearInterval(poll);
+                    showError('Analysis timeout');
+                    document.getElementById('progressSection').classList.remove('active');
+                }
+            }, 1000);
+        }
+
+        function displayResults(data) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const resultCards = document.getElementById('resultCards');
+
+            resultCards.innerHTML = '';
+
+            // Display key metrics based on file type
+            if (data.file_type === 'video') {
+                resultCards.innerHTML = `
+                    <div class="result-card gold">
+                        <div class="result-label">Unique People Detected</div>
+                        <div class="result-value">${data.results?.unique_people || 0}</div>
+                        <div class="result-subtitle">Individuals in video</div>
+                    </div>
+                    <div class="result-card green">
+                        <div class="result-label">Total Detections</div>
+                        <div class="result-value">${data.results?.total_faces || 0}</div>
+                        <div class="result-subtitle">Face detections</div>
+                    </div>
+                    <div class="result-card orange">
+                        <div class="result-label">Processing Time</div>
+                        <div class="result-value">${data.results?.processing_time?.toFixed(1) || 0}s</div>
+                        <div class="result-subtitle">Duration</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Resolution</div>
+                        <div class="result-value">${data.results?.resolution || 'N/A'}</div>
+                        <div class="result-subtitle">Video dimensions</div>
+                    </div>
+                `;
+            }
+
+            resultsContainer.style.display = 'block';
+            window.scrollTo(0, resultsContainer.offsetTop - 100);
+        }
+
+        function downloadResults(format) {
+            if (!currentAnalysisId) return;
+            window.location.href = `/results/${currentAnalysisId}/download/${format}`;
+        }
+
+        function printResults() {
+            window.print();
+        }
+
+        function showError(message) {
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-error';
+            alert.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>${message}</span>`;
+            document.getElementById('upload').insertBefore(alert, document.querySelector('.upload-section'));
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        function switchTab(e, tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            e.target.closest('.tab-btn').classList.add('active');
+
+            if (tabName === 'statistics') {
+                loadStatistics();
+            } else if (tabName === 'history') {
+                loadHistory();
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/api/statistics');
+                const stats = await response.json();
+
+                document.getElementById('totalAnalyses').textContent = stats.total || 0;
+                document.getElementById('successRate').textContent = ((stats.completed / (stats.total || 1)) * 100).toFixed(1) + '%';
+                document.getElementById('avgTime').textContent = (stats.avg_processing_time || 0).toFixed(1) + 's';
+            } catch (error) {
+                console.error('Failed to load statistics:', error);
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const response = await fetch('/results');
+                const data = await response.json();
+                const historyContainer = document.getElementById('historyContainer');
+
+                if (data.results.length === 0) {
+                    historyContainer.textContent = 'No analysis history yet.';
+                    return;
+                }
+
+                historyContainer.innerHTML = data.results.map(result => `
+                    <div style="padding: 10px; border-bottom: 1px solid #eee; text-align: left;">
+                        <strong>${result.filename}</strong> - ${result.file_type.toUpperCase()} - ${new Date(result.created_at).toLocaleString()}
+                        <span class="status-pill status-${result.status}">${result.status.toUpperCase()}</span>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Failed to load history:', error);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load initial data
+            loadHistory();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="80" viewBox="0 0 300 80" role="img" aria-label="Reliance Foundation Concept Logo">
+  <defs>
+    <linearGradient id="rf1" x1="0" x2="1">
+      <stop offset="0" stop-color="#0ea5a4"/>
+      <stop offset="1" stop-color="#0b7285"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <!-- Abstract hand + spark motif to symbolize care & impact -->
+    <path d="M28 56 C40 20 84 8 104 20 C124 32 128 60 96 64 C84 66 60 62 28 56 Z" fill="url(#rf1)" opacity="0.95"/>
+    <path d="M96 28 C110 14 142 10 158 22" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <circle cx="170" cy="18" r="5" fill="#f59e0b"/>
+    <text x="188" y="34" font-family="Poppins, Arial, sans-serif" font-weight="700" font-size="18" fill="#0f172a">Reliance Foundation</text>
+    <text x="188" y="52" font-family="Poppins, Arial, sans-serif" font-weight="500" font-size="11" fill="#64748b">Community • Education • Impact</text>
+  </g>
+</svg>
