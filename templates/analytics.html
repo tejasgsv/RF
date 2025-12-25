@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - Reliance Foundation AI Analytics Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .nav {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .nav-link {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 0 4px;
+            text-decoration: none;
+            color: #3b82f6;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-title {
+            font-size: 0.9rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            font-size: 0.8rem;
+            color: #10b981;
+        }
+
+        .metric-change.negative {
+            color: #ef4444;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .history-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .history-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            color: #334155;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .history-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-failed {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .status-processing {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #3b82f6;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover,
+        .page-btn.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #fecaca;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="static/rlogo.png" alt="Reliance Foundation Logo">
+            </div>
+            <h1 class="title">Analytics Dashboard</h1>
+            <p class="subtitle">Monitor system performance and analysis metrics</p>
+        </div>
+
+        <div class="nav">
+            <a href="/" class="nav-link">← Back to Main</a>
+        </div>
+
+        <div id="error-container"></div>
+
+        <div class="dashboard-grid" id="metrics-grid">
+            <div class="loading">Loading metrics...</div>
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">File Type Distribution</h3>
+                <canvas id="fileTypeChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3 class="chart-title">Success Rate by Type</h3>
+                <canvas id="successRateChart"></canvas>
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h3 class="history-title">Analysis History</h3>
+            <div class="filters">
+                <select id="fileTypeFilter" class="filter-select">
+                    <option value="">All File Types</option>
+                    <option value="video">Video</option>
+                    <option value="image">Image</option>
+                    <option value="office">Document</option>
+                    <option value="diamond">Diamond</option>
+                </select>
+                <select id="perPageSelect" class="filter-select">
+                    <option value="10">10 per page</option>
+                    <option value="25">25 per page</option>
+                    <option value="50">50 per page</option>
+                </select>
+            </div>
+            <div id="history-table-container">
+                <div class="loading">Loading history...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let currentPerPage = 10;
+        let currentFileTypeFilter = '';
+
+        // Load dashboard data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+            loadHistory();
+
+            // Set up filters
+            document.getElementById('fileTypeFilter').addEventListener('change', function() {
+                currentFileTypeFilter = this.value;
+                currentPage = 1;
+                loadHistory();
+            });
+
+            document.getElementById('perPageSelect').addEventListener('change', function() {
+                currentPerPage = parseInt(this.value);
+                currentPage = 1;
+                loadHistory();
+            });
+        });
+
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/api/analytics/summary');
+                const data = await response.json();
+
+                if (data.success) {
+                    displayMetrics(data);
+                    displayCharts(data);
+                } else {
+                    showError('Failed to load dashboard data: ' + data.error);
+                }
+            } catch (error) {
+                showError('Error loading dashboard data: ' + error.message);
+            }
+        }
+
+        function displayMetrics(data) {
+            const metricsGrid = document.getElementById('metrics-grid');
+            metricsGrid.innerHTML = `
+                <div class="metric-card">
+                    <div class="metric-title">Total Analyses</div>
+                    <div class="metric-value">${data.total_analyses}</div>
+                    <div class="metric-change">+${data.recent_analyses_24h} in last 24h</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Average Processing Time</div>
+                    <div class="metric-value">${data.avg_processing_time}s</div>
+                    <div class="metric-change">Target: <15s</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Success Rate</div>
+                    <div class="metric-value">${data.success_rate}%</div>
+                    <div class="metric-change ${data.success_rate < 95 ? 'negative' : ''}">${data.success_rate >= 95 ? 'Excellent' : 'Needs attention'}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Data Processed</div>
+                    <div class="metric-value">${data.data_processed_mb}MB</div>
+                    <div class="metric-change">CSV exports</div>
+                </div>
+            `;
+        }
+
+        function displayCharts(data) {
+            // File Type Distribution Chart
+            const fileTypeCtx = document.getElementById('fileTypeChart').getContext('2d');
+            const fileTypeLabels = Object.keys(data.file_type_distribution);
+            const fileTypeData = Object.values(data.file_type_distribution);
+
+            new Chart(fileTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: fileTypeLabels,
+                    datasets: [{
+                        data: fileTypeData,
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Success Rate by Type Chart
+            const successRateCtx = document.getElementById('successRateChart').getContext('2d');
+            const successLabels = Object.keys(data.success_rate_by_type);
+            const successData = successLabels.map(type => data.success_rate_by_type[type].rate);
+
+            new Chart(successRateCtx, {
+                type: 'bar',
+                data: {
+                    labels: successLabels,
+                    datasets: [{
+                        label: 'Success Rate (%)',
+                        data: successData,
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadHistory() {
+            try {
+                const response = await fetch(`/api/analytics/history?page=${currentPage}&per_page=${currentPerPage}&file_type=${currentFileTypeFilter}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayHistory(data);
+                } else {
+                    showError('Failed to load history: ' + data.error);
+                }
+            } catch (error) {
+                showError('Error loading history: ' + error.message);
+            }
+        }
+
+        function displayHistory(data) {
+            const container = document.getElementById('history-table-container');
+
+            if (data.history.length === 0) {
+                container.innerHTML = '<p class="loading">No analysis history found.</p>';
+                return;
+            }
+
+            let html = `
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Analysis ID</th>
+                            <th>File Type</th>
+                            <th>Filename</th>
+                            <th>Status</th>
+                            <th>Processing Time</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.history.forEach(item => {
+                const statusClass = item.status === 'completed' ? 'status-completed' :
+                                  item.status === 'failed' ? 'status-failed' : 'status-processing';
+                const processingTime = item.processing_time ? `${item.processing_time}s` : '-';
+                const timestamp = item.timestamp ? new Date(item.timestamp).toLocaleString() : '-';
+
+                html += `
+                    <tr>
+                        <td>${item.analysis_id}</td>
+                        <td>${item.file_type}</td>
+                        <td>${item.filename}</td>
+                        <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+                        <td>${processingTime}</td>
+                        <td>${timestamp}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+
+            // Pagination
+            if (data.total_pages > 1) {
+                html += '<div class="pagination">';
+                for (let i = 1; i <= data.total_pages; i++) {
+                    const activeClass = i === data.current_page ? ' active' : '';
+                    html += `<button class="page-btn${activeClass}" onclick="changePage(${i})">${i}</button>`;
+                }
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            loadHistory();
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('error-container');
+            errorContainer.innerHTML = `<div class="error">${message}</div>`;
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            loadDashboardData();
+            loadHistory();
+        }, 30000);
+    </script>
+</body>
+</html>

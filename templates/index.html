@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reliance Foundation AI Analytics Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .upload-section {
+            padding: 40px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #f8fafc;
+        }
+
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: translateY(-2px);
+        }
+
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            color: #64748b;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #334155;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .analysis-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .option-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .option-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+        }
+
+        .option-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 8px;
+            color: #64748b;
+        }
+
+        .option-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #334155;
+        }
+
+        .analyze-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 24px;
+            width: 100%;
+            max-width: 200px;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+        }
+
+        .analyze-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .progress-section {
+            padding: 40px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .progress-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .progress-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 16px 0;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .results-section {
+            padding: 40px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .result-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .result-content {
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .download-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px -1px rgba(16, 185, 129, 0.2);
+        }
+
+        .download-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .upload-section,
+            .progress-section,
+            .results-section {
+                padding: 20px;
+            }
+
+            .analysis-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="static/rlogo.png" alt="Reliance Foundation Logo">
+            </div>
+            <h1 class="title">Reliance Foundation AI Analytics Platform</h1>
+            <p class="subtitle">Advanced AI-powered analytics for video, image, and document analysis</p>
+            <div class="nav">
+                <a href="/analytics" class="nav-link">📊 View Analytics Dashboard</a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="upload-section">
+                <h2 class="section-title">Upload Your File</h2>
+                <div class="upload-area">
+                    <div class="upload-icon">📁</div>
+                    <div class="upload-text">Drag & drop your file here or click to browse</div>
+                    <div class="upload-subtext">Supported formats: Video (MP4, AVI), Images (JPG, PNG), Documents (PDF, DOCX)</div>
+                    <input type="file" class="file-input" id="fileInput">
+                </div>
+                <div class="analysis-options">
+                    <div class="option-card" data-type="video">
+                        <div class="option-icon">🎥</div>
+                        <div class="option-text">Video Analysis</div>
+                    </div>
+                    <div class="option-card" data-type="image">
+                        <div class="option-icon">🖼️</div>
+                        <div class="option-text">Image Analysis</div>
+                    </div>
+                    <div class="option-card" data-type="office">
+                        <div class="option-icon">📄</div>
+                        <div class="option-text">Document Analysis</div>
+                    </div>
+                    <div class="option-card" data-type="diamond">
+                        <div class="option-icon">💎</div>
+                        <div class="option-text">Diamond Analysis</div>
+                    </div>
+                </div>
+                <button class="analyze-btn" id="analyzeBtn" disabled>Analyze File</button>
+            </div>
+            <div class="progress-section" style="display: none;">
+                <div class="progress-container">
+                    <h3 class="progress-title">Analyzing Your File...</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Initializing analysis...</p>
+                </div>
+            </div>
+            <div class="results-section" style="display: none;">
+                <div class="results-grid" id="resultsGrid"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // JavaScript for handling file uploads and analysis
+        let selectedFileType = null;
+        let selectedFile = null;
+
+        // File input handling
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.querySelector('.upload-area');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+
+        // Upload area drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileSelect(files[0]);
+            }
+        });
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        // Analysis option selection
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedFileType = card.dataset.type;
+                updateAnalyzeButton();
+            });
+        });
+
+        function handleFileSelect(file) {
+            selectedFile = file;
+            document.querySelector('.upload-text').textContent = `Selected: ${file.name}`;
+            updateAnalyzeButton();
+        }
+
+        function updateAnalyzeButton() {
+            if (selectedFile && selectedFileType) {
+                analyzeBtn.disabled = false;
+            } else {
+                analyzeBtn.disabled = true;
+            }
+        }
+
+        // Analysis submission
+        analyzeBtn.addEventListener('click', async () => {
+            if (!selectedFile || !selectedFileType) return;
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('type', selectedFileType);
+
+            // Show progress section
+            document.querySelector('.upload-section').style.display = 'none';
+            document.querySelector('.progress-section').style.display = 'block';
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    if (selectedFileType === 'video') {
+                        // Handle video analysis with polling
+                        pollAnalysisStatus(result.analysis_id);
+                    } else {
+                        // Handle immediate results
+                        showResults(result);
+                    }
+                } else {
+                    alert('Analysis failed: ' + result.error);
+                    resetUI();
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+                resetUI();
+            }
+        });
+
+        function pollAnalysisStatus(analysisId) {
+            const pollInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`/check_analysis/${analysisId}`);
+                    const result = await response.json();
+
+                    if (result.completed) {
+                        clearInterval(pollInterval);
+                        if (result.success) {
+                            showResults(result);
+                        } else {
+                            alert('Analysis failed: ' + result.error);
+                            resetUI();
+                        }
+                    } else {
+                        // Update progress if available
+                        document.getElementById('progressText').textContent = result.message || 'Analysis in progress...';
+                    }
+                } catch (error) {
+                    clearInterval(pollInterval);
+                    alert('Error checking analysis status: ' + error.message);
+                    resetUI();
+                }
+            }, 2000);
+        }
+
+        function showResults(result) {
+            document.querySelector('.progress-section').style.display = 'none';
+            document.querySelector('.results-section').style.display = 'block';
+
+            const resultsGrid = document.getElementById('resultsGrid');
+            resultsGrid.innerHTML = '';
+
+            if (selectedFileType === 'video') {
+                resultsGrid.innerHTML = `
+                    <div class="result-card">
+                        <h3 class="result-title">Video Analysis Results</h3>
+                        <div class="result-content">
+                            <div class="stat-grid">
+                                <div class="stat-item">
+                                    <div class="stat-value">${result.unique_people}</div>
+                                    <div class="stat-label">Unique People</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${result.total_objects}</div>
+                                    <div class="stat-label">Total Objects</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${result.total_frames}</div>
+                                    <div class="stat-label">Frames Analyzed</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">${result.processing_time}s</div>
+                                    <div class="stat-label">Processing Time</div>
+                                </div>
+                            </div>
+                            <button class="download-btn" onclick="downloadCSV('${result.analysis_id || ''}')">Download CSV</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Handle other analysis types
+                resultsGrid.innerHTML = `
+                    <div class="result-card">
+                        <h3 class="result-title">Analysis Results</h3>
+                        <div class="result-content">
+                            <p>Analysis completed successfully. Processing time: ${result.processing_time}s</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function downloadCSV(analysisId) {
+            fetch('/download_csv', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ analysis_id: analysisId })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'analysis_results.csv';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            })
+            .catch(error => alert('Download failed: ' + error.message));
+        }
+
+        function resetUI() {
+            document.querySelector('.upload-section').style.display = 'block';
+            document.querySelector('.progress-section').style.display = 'none';
+            document.querySelector('.results-section').style.display = 'none';
+            selectedFile = null;
+            selectedFileType = null;
+            document.querySelector('.upload-text').textContent = 'Drag & drop your file here or click to browse';
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            analyzeBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>
