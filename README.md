@@ -1,3 +1,4 @@
+<!-- redeploy -->
 # 🚀 Reliance Foundation AI Analytics Platform
 
 ## 🏗️ Architecture
