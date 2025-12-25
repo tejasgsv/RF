@@ -49,11 +49,14 @@ def ensure_directories(app):
             except OSError as e:
                 # Handle read-only file system (common in serverless environments)
                 if e.errno == 30:  # Read-only file system
-                    logging.warning(f"Read-only file system detected. Skipping directory creation for {directory}")
+                    print(f"Warning: Read-only file system detected. Skipping directory creation for {directory}")
+                    continue  # Skip this directory, don't crash
                 else:
-                    logging.error(f"Failed to create directory {directory}: {e}")
+                    print(f"Error: Failed to create directory {directory}: {e}")
+                    continue  # Continue with other directories
             except Exception as e:
-                logging.error(f"Failed to create directory {directory}: {e}")
+                print(f"Error: Failed to create directory {directory}: {e}")
+                continue  # Continue with other directories
 
 def validate_file_extension(filename, allowed_extensions):
     """Validate file extension"""
